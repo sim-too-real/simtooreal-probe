@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package (dev extras)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+          pip install build
+
+      - name: Pytest
+        run: pytest -q
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Install wheel smoke test
+        run: |
+          pip install dist/simtooreal_probe-*.whl
+          python -c "import simtooreal_probe as p; assert p.__version__; assert hasattr(p.ProbeRun, 'to_html')"

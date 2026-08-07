@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "simtooreal-probe"
+version = "0.1.0"
+description = "Open-core policy debugging layer: local-first deep analytics for any RL training run"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    { name = "SimTooReal contributors" },
+]
+keywords = [
+    "reinforcement-learning",
+    "robotics",
+    "observability",
+    "sim-to-real",
+    "rsl-rl",
+    "isaac-lab",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.23",
+]
+
+[project.optional-dependencies]
+# Parquet shards + DuckDB/pandas notebook queries
+query = ["pyarrow>=14", "duckdb>=0.10", "pandas>=1.5"]
+# Matplotlib helpers (optional plots via user code)
+plot = ["matplotlib>=3.5"]
+# Real-robot bag / rosbag2 → probe traces
+mcap = ["mcap>=1.1", "mcap-ros2-support>=0.5"]
+full = [
+    "pyarrow>=14",
+    "duckdb>=0.10",
+    "pandas>=1.5",
+    "matplotlib>=3.5",
+    "mcap>=1.1",
+    "mcap-ros2-support>=0.5",
+]
+dev = [
+    "pytest>=7.0",
+    "pyarrow>=14",
+    "pandas>=1.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/sim-too-real/simtooreal-probe"
+Documentation = "https://github.com/sim-too-real/simtooreal-probe#readme"
+Repository = "https://github.com/sim-too-real/simtooreal-probe"
+Issues = "https://github.com/sim-too-real/simtooreal-probe/issues"
+Changelog = "https://github.com/sim-too-real/simtooreal-probe/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/simtooreal_probe"]
+
+# Map src/ layout so the installed top-level package is simtooreal_probe
+[tool.hatch.build.targets.wheel.sources]
+"src/simtooreal_probe" = "simtooreal_probe"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/NOTICE",
+    "/CHANGELOG.md",
+    "/CONTRIBUTING.md",
+    "/SECURITY.md",
+    "/CODE_OF_CONDUCT.md",
+    "/docs",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
