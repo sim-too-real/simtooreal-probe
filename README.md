@@ -14,6 +14,23 @@ Optional HTTP sink ships the same events to a remote backend when you configure 
 | **Core deps** | `numpy` only |
 | **License** | Apache-2.0 |
 
+<p align="center">
+  <img src="docs/assets/hero-policy-debug.jpg" alt="simtooreal-probe — local-first policy debugging" width="100%" />
+</p>
+
+### Showcase
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/assets/feature-multi-source.jpg" alt="Multi-source sim and real" width="100%" /><br/>**Sim + real, one schema** | <img src="docs/assets/feature-failure-replay.jpg" alt="Failure onset reconstruction" width="100%" /><br/>**Failure / onset replay** | <img src="docs/assets/feature-local-first.jpg" alt="Offline local analytics" width="100%" /><br/>**Local-first + HTML** |
+
+<p align="center">
+  <img src="docs/assets/feature-three-grains.jpg" alt="Iteration, episode, and step grains" width="420" /><br/>
+  <em>Iteration · Episode · Step — one envelope, three grains</em>
+</p>
+
+Static marketing landing (open in a browser): [`docs/landing.html`](docs/landing.html)
+
 ---
 
 ## Why this package

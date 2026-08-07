@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>simtooreal-probe — Open-core policy debugging</title>
+  <meta name="description" content="Local-first deep analytics for RL robot policies: capture, query, and reconstruct failures with no account required." />
+  <meta property="og:title" content="simtooreal-probe" />
+  <meta property="og:description" content="Open-core policy debugging layer for any RL training run." />
+  <meta property="og:image" content="assets/og-banner.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root {
+      --bg: #070a10;
+      --panel: #0f141d;
+      --line: #1e2633;
+      --txt: #e6edf3;
+      --muted: #8b97a7;
+      --accent: #5b9dff;
+      --good: #3fb950;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      line-height: 1.55;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+    header.hero {
+      position: relative;
+      border-radius: 0 0 1.25rem 1.25rem;
+      overflow: hidden;
+      min-height: 420px;
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 2.5rem;
+      background: #0b0e14 center/cover no-repeat;
+      background-image: linear-gradient(90deg, rgba(7,10,16,.92) 0%, rgba(7,10,16,.55) 48%, rgba(7,10,16,.25) 100%),
+        url("assets/hero-policy-debug.jpg");
+    }
+    .hero-inner { padding: 2.5rem 1.5rem 2.75rem; max-width: 560px; }
+    .badge {
+      display: inline-block;
+      font-size: .75rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--good);
+      border: 1px solid rgba(63,185,80,.35);
+      background: rgba(63,185,80,.08);
+      padding: .25rem .6rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 .75rem; }
+    .lead { color: var(--muted); font-size: 1.05rem; margin: 0 0 1.25rem; }
+    .cta { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .btn {
+      display: inline-block;
+      padding: .65rem 1rem;
+      border-radius: .6rem;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--txt);
+      text-decoration: none;
+    }
+    .btn.primary { background: var(--accent); border-color: transparent; color: #041018; }
+    .btn:hover { filter: brightness(1.08); text-decoration: none; }
+    section { margin: 2.75rem 0; }
+    h2 { font-size: 1.35rem; margin: 0 0 .35rem; }
+    .section-lead { color: var(--muted); margin: 0 0 1.25rem; max-width: 62ch; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      background: #0b0e14;
+    }
+    .card.square img { aspect-ratio: 1/1; }
+    .card-body { padding: 1rem 1.1rem 1.2rem; }
+    .card h3 { margin: 0 0 .35rem; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--muted); font-size: .92rem; }
+    .supports {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      background: rgba(91,157,255,.06);
+      color: var(--txt);
+      padding: .4rem .7rem;
+      border-radius: 999px;
+      font-size: .85rem;
+    }
+    pre {
+      background: #0b0e14;
+      border: 1px solid var(--line);
+      border-radius: .75rem;
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      font-size: .85rem;
+      color: #c8d4e0;
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .9rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="badge">Open-core · Apache-2.0 · Local-first</div>
+      <h1>Policy debugging for any RL training run</h1>
+      <p class="lead">
+        Capture iteration, episode, and step traces. Query failures offline.
+        Export a single HTML replay. No account. No network required.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/sim-too-real/simtooreal-probe">GitHub</a>
+        <a class="btn" href="../README.md">Docs / install</a>
+        <a class="btn" href="SCHEMA.md">Trace schema</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section>
+      <h2>What it showcases</h2>
+      <p class="section-lead">
+        Marketing visuals for landing pages — what probe captures, where it runs,
+        and how researchers reconstruct failures.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <img src="assets/feature-multi-source.jpg" alt="Unified traces from sim and real robots" width="640" height="360" loading="lazy" />
+          <div class="card-body">
+            <h3>One schema, many sources</h3>
+            <p>PhysX / Isaac Lab, MuJoCo-style sims, and real robots under the same <code>PolicyTraceEvent</code> envelope.</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="assets/feature-failure-replay.jpg" alt="Failure onset reconstruction UI concept" width="640" height="360" loading="lazy" />
+          <div class="card-body">
+            <h3>Failure reconstruction</h3>
+            <p>CUSUM onset on reward, value, and action channels. Scrub to the first abnormal step.</p>
+          </div>
+        </article>
+        <article class="card square">
+          <img src="assets/feature-three-grains.jpg" alt="Iteration episode step grains" width="640" height="640" loading="lazy" />
+          <div class="card-body">
+            <h3>Three grains</h3>
+            <p><strong>Iteration</strong> metrics · <strong>Episode</strong> outcomes · <strong>Step</strong> policy traces (<code>PROBE_CAPTURE=full</code>).</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="assets/feature-local-first.jpg" alt="Offline notebook and HTML failure replay" width="640" height="360" loading="lazy" />
+          <div class="card-body">
+            <h3>Local-first analytics</h3>
+            <p>Notebook queries via <code>ProbeRun</code> and standalone HTML via <code>run.to_html()</code> — works air-gapped.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>What it supports</h2>
+      <p class="section-lead">Framework-agnostic capture with optional remote sink.</p>
+      <div class="supports">
+        <span class="chip">Isaac Lab / RSL-RL</span>
+        <span class="chip">MuJoCo / SB3 / Gym</span>
+        <span class="chip">Custom training loops</span>
+        <span class="chip">Real-robot bags (MCAP)</span>
+        <span class="chip">Parquet + DuckDB notebooks</span>
+        <span class="chip">Optional HTTP sink</span>
+        <span class="chip">Python 3.10+</span>
+        <span class="chip">numpy-only core</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>30-second start</h2>
+      <pre><code>pip install "git+https://github.com/sim-too-real/simtooreal-probe.git"
+
+import simtooreal_probe as probe
+probe.init(run_id="demo", capture="full")
+# ... train / emit ...
+probe.close()
+path = probe.ProbeRun("demo").to_html("ep-0")</code></pre>
+    </section>
+
+    <footer>
+      simtooreal-probe · Apache-2.0 ·
+      Assets in <a href="assets/">docs/assets</a> ·
+      Open Graph: <a href="assets/og-banner.jpg">og-banner.jpg</a>
+    </footer>
+  </div>
+</body>
+</html>

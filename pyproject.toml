@@ -82,6 +82,7 @@ include = [
     "/CODE_OF_CONDUCT.md",
     "/docs",
 ]
+# Marketing JPGs live under docs/assets (landing + README); keep them in the sdist.
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
