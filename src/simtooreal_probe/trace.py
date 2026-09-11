@@ -212,7 +212,7 @@ class PolicyTraceEvent:
             run_id=run_id,
             source=source,
             iteration=int(iteration),
-            scalars={k: float(v) for k, v in scalars.items() if v is not None},
+            scalars={k: f for k, v in scalars.items() if (f := _fin(v)) is not None},
             tags=dict(tags or {}),
         )
 
@@ -378,7 +378,7 @@ class DimRegistry:
         out: Dict[str, float] = {}
         for i, v in enumerate(values):
             key = names[i] if names and i < len(names) else f"{field_name}_{i}"
-            out[key] = float(v)
+            out[key] = float(v) if v is not None and _fin(v) is not None else float("nan")
         return out
 
     def to_dict(self) -> Dict[str, Any]:

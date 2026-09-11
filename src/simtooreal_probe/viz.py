@@ -25,6 +25,19 @@ from typing import Any, Dict, List, Optional
 from .trace import Grain, V_ACTION, V_OBS, V_POLICY_STATE
 
 
+def _viz_float(x: Any, default: Optional[float] = None) -> Optional[float]:
+    """NaN/None-safe float for failure episodes (exactly when values go bad)."""
+    if x is None:
+        return default
+    try:
+        v = float(x)
+    except (TypeError, ValueError):
+        return default
+    if v != v or v in (float("inf"), float("-inf")):  # NaN / Inf
+        return default
+    return v
+
+
 def _rows_for_episode(run, episode_id: str, source: Optional[str]) -> List[Dict[str, Any]]:
     """Raw per-step dicts for one episode, sorted by step (no pandas dependency)."""
     rows = [r for r in run._load(Grain.STEP, source) if r.get("episode_id") == episode_id]
@@ -77,14 +90,14 @@ def build_payload(run, episode_id: str, source: Optional[str] = None) -> Dict[st
         steps.append(
             {
                 "i": r.get("step_idx") or 0,
-                "reward": float(sc.get("reward", 0.0)),
-                "value": float(ps[i_val]) if 0 <= i_val < len(ps) else None,
-                "log_prob": float(ps[i_lp]) if 0 <= i_lp < len(ps) else None,
-                "ret": float(ps[i_ret]) if 0 <= i_ret < len(ps) else None,
+                "reward": _viz_float(sc.get("reward"), 0.0),
+                "value": _viz_float(ps[i_val]) if 0 <= i_val < len(ps) else None,
+                "log_prob": _viz_float(ps[i_lp]) if 0 <= i_lp < len(ps) else None,
+                "ret": _viz_float(ps[i_ret]) if 0 <= i_ret < len(ps) else None,
             }
         )
-        obs_mat.append([float(x) for x in vec.get(V_OBS, [])])
-        act_mat.append([float(x) for x in vec.get(V_ACTION, [])])
+        obs_mat.append([_viz_float(x, 0.0) for x in vec.get(V_OBS, [])])
+        act_mat.append([_viz_float(x, 0.0) for x in vec.get(V_ACTION, [])])
         rt = vec.get("reward_terms", [])
         rt_mat.append(run.dims.resolve("reward_terms", rt) if rt else {})
 

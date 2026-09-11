@@ -85,6 +85,15 @@ class TraceWriter:
 
     def emit(self, event: PolicyTraceEvent) -> None:
         if event.grain not in self._allowed:
+            if event.grain.value == "step" and not getattr(self, "_warned_step_drop", False):
+                self._warned_step_drop = True
+                import warnings
+                warnings.warn(
+                    "probe is dropping STEP events (capture=%r). "
+                    "Set PROBE_CAPTURE=full or probe.init(capture='full') / probe.watch() "
+                    "to keep per-step traces." % (self.capture,),
+                    stacklevel=2,
+                )
             return
         self._q.put(event)
 
