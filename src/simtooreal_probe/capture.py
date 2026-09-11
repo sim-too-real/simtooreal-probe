@@ -39,7 +39,16 @@ def _np():
 
 # Field name on rsl_rl RolloutStorage -> our policy_state component name.
 # These are the tensors RSL-RL keeps for every (step, env) in the rollout buffer.
-_STORAGE_FIELDS = ("observations", "actions", "rewards", "actions_log_prob", "values", "returns", "dones")
+_STORAGE_FIELDS = (
+    "observations",
+    "actions",
+    "rewards",
+    "actions_log_prob",
+    "values",
+    "returns",
+    "dones",
+    "time_outs",
+)
 
 
 class RslRlStorageCapture:
@@ -104,8 +113,20 @@ class RslRlStorageCapture:
                 except Exception:
                     continue
             try:
-                # .float() upcasts fp16/bf16 (NumPy has no bf16) before .numpy().
-                arr = t.detach().to("cpu").float().numpy()
+                if hasattr(t, "detach"):
+                    t = t.detach()
+                # Slice the env axis on-device BEFORE the D2H copy. Tracing 8 of
+                # 4096 envs must not pay for the other 4088.
+                if hasattr(t, "shape") and len(getattr(t, "shape", ())) >= 2:
+                    try:
+                        if int(t.shape[1]) > self.traced_envs:
+                            t = t[:, : self.traced_envs]
+                    except Exception:
+                        pass
+                if hasattr(t, "to"):
+                    arr = t.to("cpu").float().numpy()
+                else:
+                    arr = np.asarray(t, dtype="float32")
             except Exception:
                 try:
                     arr = np.asarray(t, dtype="float32")
@@ -128,6 +149,13 @@ class RslRlStorageCapture:
             data = self._extract(storage)
             if not data:
                 return 0
+            # Align T across fields — RSL-RL often stores obs at T+1 vs actions at T.
+            lengths = [int(a.shape[0]) for a in data.values() if getattr(a, "ndim", 0) >= 1]
+            if lengths:
+                t_min = min(lengths)
+                for k, a in list(data.items()):
+                    if getattr(a, "ndim", 0) >= 1 and a.shape[0] > t_min:
+                        data[k] = a[:t_min]
             return self._emit(data, iteration)
         except Exception:
             return 0
@@ -188,8 +216,11 @@ class RslRlStorageCapture:
 
                 done = scalar("dones", t, e)
                 if done is not None and done >= 0.5:
-                    # Episodic return = SUM of per-step rewards (NOT storage.returns,
-                    # which is the bootstrapped GAE value target, not the episode sum).
+                    timeout = scalar("time_outs", t, e)
+                    is_timeout = timeout is not None and timeout >= 0.5
+                    # Timeouts are truncations, not crashes — failures() ignores them.
+                    termination = "timeout" if is_timeout else "terminated"
+                    success = False if not is_timeout else None
                     self.writer.emit(
                         PolicyTraceEvent.episode_event(
                             self.run_id,
@@ -199,6 +230,8 @@ class RslRlStorageCapture:
                             env_idx=e,
                             ep_return=self._ep_rew[e],
                             length=self._ep_len[e],
+                            success=success,
+                            termination=termination,
                         )
                     )
                     self._ep_counter[e] += 1
@@ -279,6 +312,27 @@ def infer_dim_registry(env: Any, run_id: str) -> DimRegistry:
                 # else: leave obs unnamed (positional obs_i) rather than mis-name it.
     except Exception:
         pass
+    try:
+        am = getattr(base, "action_manager", None)
+        if am is not None:
+            terms = getattr(am, "active_terms", None)
+            term_dims = getattr(am, "action_term_dim", None) or getattr(am, "term_dim", None)
+            if terms:
+                if term_dims and len(list(term_dims)) == len(list(terms)):
+                    expanded_a: List[str] = []
+                    for nm, shp in zip(terms, term_dims):
+                        n = 1
+                        for s in (shp if isinstance(shp, (list, tuple)) else [shp]):
+                            n *= int(s)
+                        if n <= 1:
+                            expanded_a.append(str(nm))
+                        else:
+                            expanded_a.extend([f"{nm}[{i}]" for i in range(n)])
+                    action_names = expanded_a
+                else:
+                    action_names = [str(t) for t in terms]
+    except Exception:
+        pass
     return policy_state_registry(
         run_id,
         obs_names=obs_names or None,
@@ -332,7 +386,12 @@ class GymStepCapture:
             )
         )
         if reward is not None:
-            self._return += float(reward)
+            try:
+                rf = float(reward)
+                if math.isfinite(rf):
+                    self._return += rf
+            except (TypeError, ValueError):
+                pass
         self._step += 1
 
     def end_episode(
@@ -341,8 +400,10 @@ class GymStepCapture:
         success: Optional[bool] = None,
         termination: Optional[str] = None,
         iteration: Optional[int] = None,
+        tags: Optional[Dict[str, Any]] = None,
     ) -> None:
         ep_id = f"{self.source}:ep{self._ep}"
+        extra = dict(tags or {})
         self.writer.emit(
             PolicyTraceEvent.episode_event(
                 self.run_id,
@@ -353,6 +414,7 @@ class GymStepCapture:
                 length=self._step,
                 success=success,
                 termination=termination,
+                tags=extra or None,
             )
         )
         self._ep += 1

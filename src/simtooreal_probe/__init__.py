@@ -38,9 +38,9 @@ try:
     try:
         __version__ = _pkg_version("simtooreal-probe")
     except PackageNotFoundError:
-        __version__ = "0.1.0"
+        __version__ = "0.2.0"
 except Exception:  # pragma: no cover
-    __version__ = "0.1.0"
+    __version__ = "0.2.0"
 
 from .trace import (
     DimRegistry,
@@ -62,6 +62,9 @@ from . import adapt  # real-robot / external-log → trace adapters
 from . import viz  # standalone HTML failure replay
 from .analytics import LocalRunSummary
 from .viz import export_failure_html, render_failure_replay_html
+from .diagnose import Finding, diagnose, diagnose_run, health_score, CATALOG as FAILURE_CATALOG
+from .compare import compare_run, compare_sources
+from .adapt_lerobot import lerobot_to_traces
 
 __all__ = [
     "__version__",
@@ -98,6 +101,14 @@ __all__ = [
     "SOURCE_MUJOCO",
     "SOURCE_MJWARP",
     "real_source",
+    "Finding",
+    "diagnose",
+    "diagnose_run",
+    "health_score",
+    "FAILURE_CATALOG",
+    "compare_run",
+    "compare_sources",
+    "lerobot_to_traces",
 ]
 
 # Single process-wide writer (one training run per process).
@@ -174,21 +185,26 @@ def register_dims(registry: DimRegistry) -> None:
 def rsl_rl_capture(*, source: str = SOURCE_PHYSX, traced_envs: int = 8) -> RslRlStorageCapture:
     """Capture per-step policy trace from an RSL-RL rollout buffer (the moat path)."""
     w = writer()
+    if getattr(w, "capture", "episodes") != "full":
+        w.set_capture("full")
     return RslRlStorageCapture(w, w.run_id, source=source, traced_envs=traced_envs)
 
 
 def gym_capture(*, source: str = SOURCE_PHYSX) -> GymStepCapture:
     """Per-step capture for raw gym / SB3 / real-robot replay loops."""
     w = writer()
+    if getattr(w, "capture", "episodes") != "full":
+        w.set_capture("full")
     return GymStepCapture(w, w.run_id, source=source)
 
 
-def watch(runner: object, *, env: object = None, source: str = SOURCE_PHYSX, traced_envs: int = 8) -> RslRlStorageCapture:
+def watch(runner: object, *, env: object = None, source: str = SOURCE_PHYSX, traced_envs: int = 8, capture: str = "full") -> RslRlStorageCapture:
     """Convenience: init (if needed), register named dims from the env, and return
     an RSL-RL capture bound to `runner`. Call `.capture_rollout(runner, it)` each
-    iteration. This is the `probe.watch(runner)` one-liner from the design.
+    iteration. Capture defaults to ``full`` so the per-step policy trace actually
+    lands — the previous default (``episodes``) silently dropped STEP events.
     """
-    init()
+    init(capture=capture)
     cap = rsl_rl_capture(source=source, traced_envs=traced_envs)
     target_env = env if env is not None else getattr(runner, "env", None)
     if target_env is not None:

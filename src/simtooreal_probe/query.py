@@ -211,6 +211,22 @@ class ProbeRun:
             "detector": "cusum_v1",
         }
 
+    def diagnose(self) -> List[Any]:
+        """Run-level failure taxonomy (entropy, KL, VLA action-std, sim/real gap)."""
+        from .diagnose import diagnose_run
+
+        return diagnose_run(self)
+
+    def findings(self) -> List[Dict[str, Any]]:
+        return [f.to_dict() if hasattr(f, "to_dict") else f for f in self.diagnose()]
+
+    def compare(self, sim_source: Optional[str] = None, real_source: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        from .compare import compare_run, compare_sources
+
+        if sim_source and real_source:
+            return compare_sources(self, sim_source, real_source)
+        return compare_run(self)
+
     # ── internals ─────────────────────────────────────────────────────────────
 
     @staticmethod

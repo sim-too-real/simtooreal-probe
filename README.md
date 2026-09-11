@@ -111,6 +111,22 @@ for step in range(1000):
 probe.close()
 ```
 
+### Diagnose a run
+
+```python
+from simtooreal_probe import ProbeRun, health_score, lerobot_to_traces
+
+run = ProbeRun("demo-run")
+findings = run.diagnose()          # entropy, KL, zero action-std, idle VLA, ...
+for f in findings:
+    print(f.severity, f.id, f.remedy)
+print(run.compare())               # sim vs real transfer_risk
+print(health_score(findings, failure_rate=0.4))
+
+# LeRobot v2/v3 on disk → same schema as RSL-RL
+lerobot_to_traces("~/lerobot/pick_cube", run_id="so101-pick", source="real:so101")
+```
+
 ### Failure replay HTML
 
 ```python
@@ -124,12 +140,12 @@ path = run.to_html("ep-0")  # self-contained HTML, no CDN
 ### Capture levels (FPS escape hatch)
 
 ```text
-PROBE_CAPTURE=off|metrics|episodes|full   # default: episodes
+PROBE_CAPTURE=off|metrics|episodes|full
 ```
 
 - `metrics` — iteration events only
-- `episodes` — + episode rollups (default)
-- `full` — + per-step policy trace
+- `episodes` — + episode rollups (`probe.init()` default)
+- `full` — + per-step policy trace. **`probe.watch()` / `rsl_rl_capture()` / `gym_capture()` default to this** so the advertised STEP grain is not silently dropped. A STEP write under `capture=episodes` now warns once instead of vanishing.
 
 ---
 

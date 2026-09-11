@@ -90,6 +90,17 @@ class LocalRunSummary:
             "mean_episode_return": (sum(ep_returns) / len(ep_returns)) if ep_returns else None,
             "sources": self._run.sources() if hasattr(self._run, "sources") else [],
         }
+        try:
+            from .diagnose import diagnose_run, health_score
+
+            findings = diagnose_run(self._run)
+            out["findings"] = [f.to_dict() for f in findings]
+            out["health"] = health_score(
+                findings, failure_rate=out["failure_rate"]
+            )
+        except Exception:
+            out["findings"] = []
+            out["health"] = None
         return out
 
     def export_csv(self, path: Union[str, Path], *, source: Optional[str] = None) -> Path:
