@@ -12,8 +12,8 @@ Please **do not** open a public GitHub issue for security problems.
 
 Report privately via one of:
 
-- GitHub Security Advisories on [sim-too-real/simtooreal-probe](https://github.com/sim-too-real/simtooreal-probe/security/advisories/new) (once the repo is public)
-- Email the maintainers listed on the GitHub organization profile
+- Email: [vardhan@simtooreal.com](mailto:vardhan@simtooreal.com)
+- GitHub Security Advisories on [sim-too-real/simtooreal-probe](https://github.com/sim-too-real/simtooreal-probe/security/advisories/new)
 
 Include:
 
