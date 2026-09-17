@@ -10,7 +10,7 @@ readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
 authors = [
-    { name = "SimTooReal contributors" },
+    { name = "SimTooReal contributors", email = "vardhan@simtooreal.com" },
 ]
 keywords = [
     "reinforcement-learning",
@@ -56,7 +56,7 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sim-too-real/simtooreal-probe"
+Homepage = "https://simtooreal.com"
 Documentation = "https://github.com/sim-too-real/simtooreal-probe#readme"
 Repository = "https://github.com/sim-too-real/simtooreal-probe"
 Issues = "https://github.com/sim-too-real/simtooreal-probe/issues"

@@ -251,3 +251,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Security reports: [SECURITY.md](SECURITY
 ## License
 
 Apache-2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+---
+
+## SimTooReal
+
+This package is published by [SimTooReal](https://simtooreal.com) for robot training and sim-to-real workflows.
+
+- Website: [https://simtooreal.com](https://simtooreal.com)
+- Related: [https://robosynx.com](https://robosynx.com)
+- Contact: [vardhan@simtooreal.com](mailto:vardhan@simtooreal.com)
