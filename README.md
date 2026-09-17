@@ -254,6 +254,20 @@ Apache-2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
 ---
 
+## Deeper stack
+
+Public diligence writing for layers behind [RoboSynx](https://robosynx.com) and [SimTooReal](https://simtooreal.com). These are **pilot / diligence** surfaces — not public open-source dumps, not metal MEASURED evidence, and not ISO/SIL certificates. **`SIM ≠ metal`.**
+
+- [Sincere stack](docs/sincere-stack.md) — public product narrative
+- [First Principles](docs/first-principles.md) — unit-checked mechanism admission
+- [engineering-data](docs/engineering-data.md) — claims, rights, provenance, SI
+- [reality-os-rust](docs/reality-os-rust.md) — fail-closed last-gate
+- [Deeper stack map](docs/deeper-stack.md) — how the layers relate
+
+Contact: [vardhan@simtooreal.com](mailto:vardhan@simtooreal.com)
+
+---
+
 ## SimTooReal
 
 This package is published by [SimTooReal](https://simtooreal.com) for robot training and sim-to-real workflows.
