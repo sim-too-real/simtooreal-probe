@@ -261,3 +261,4 @@ This package is published by [SimTooReal](https://simtooreal.com) for robot trai
 - Website: [https://simtooreal.com](https://simtooreal.com)
 - Related: [https://robosynx.com](https://robosynx.com)
 - Contact: [vardhan@simtooreal.com](mailto:vardhan@simtooreal.com)
+- Sincere stack: [docs/sincere-stack.md](docs/sincere-stack.md)

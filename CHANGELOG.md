@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Public stack narrative (GitHub-readable, no captcha): [docs/sincere-stack.md](docs/sincere-stack.md).
+
 ### Changed
 
 - Public contact and company links: [simtooreal.com](https://simtooreal.com), [robosynx.com](https://robosynx.com), [vardhan@simtooreal.com](mailto:vardhan@simtooreal.com).
