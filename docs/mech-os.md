@@ -1,14 +1,14 @@
-# First Principles — unit-checked mechanisms as the unit of knowing
+# Mech OS — unit-checked mechanisms as the unit of knowing
 
 Physical AI fails quietly when teams treat English prose, spreadsheet cells, and bare floats as if they were physics. A mass written without a unit, a “verified” claim with no test, or a viewport that looks correct while the admission layer never ran — those are not edge cases. They are the default failure mode.
 
-**First Principles** is our growing source of truth for admitted definitions, conservation laws, unit-checked equations, and experiments that either passed or failed. It is private R&D today — available for pilot diligence, not a public marketplace product. This article explains the design we are willing to stand behind in public.
+**Mech OS** is our growing source of truth for admitted definitions, conservation laws, unit-checked equations, and experiments that either passed or failed. It is private R&D today — available for pilot diligence, not a public marketplace product. This article explains the design we are willing to stand behind in public.
 
 Contact: **vardhan@simtooreal.com** · [simtooreal.com](https://simtooreal.com) · [robosynx.com](https://robosynx.com)
 
 ## The unit of knowing is a mechanism
 
-In First Principles, knowledge is not a paragraph. The unit of knowing is a **mechanism**:
+In Mech OS, knowledge is not a paragraph. The unit of knowing is a **mechanism**:
 
 - **inputs**
 - **outputs**
@@ -48,7 +48,7 @@ This is a **reduction stack**. You cannot skip layers. A machine claim that pret
 Simulation admission is not decided by what the viewport draws.
 
 - **`machine::verify`** is the sole simulation-admission authority
-- A FreeCAD add-on can call the First Principles workbench; the **viewport never admits**
+- A FreeCAD add-on can call the Mech OS workbench; the **viewport never admits**
 - There is **no executable G-code** path from this stack
 - Path / CAM capability is **named-missing** — we name the hole instead of implying a CAM product we do not ship
 
@@ -63,7 +63,7 @@ The official vertical we commit to in diligence is narrow on purpose:
 
 We do not claim to invent arbitrary machines end-to-end. We do not claim metal MEASURED status for things that only lived in SIM. Limits are part of the product surface.
 
-## What First Principles is not
+## What Mech OS is not
 
 - Not a public open-source dump of the full kernel (today: private R&D / pilot diligence)
 - Not a certified safety PLC or ISO/SIL certificate
@@ -74,7 +74,7 @@ We do not claim to invent arbitrary machines end-to-end. We do not claim metal M
 
 [RoboSynx](https://robosynx.com) is the free developer surface for robot files (URDF / SDF / MJCF, validation, viewing, ROS 2 scaffold). [SimTooReal](https://simtooreal.com) is training ops and sim-to-real scoring for Isaac Lab and MuJoCo.
 
-First Principles sits underneath as a **credibility layer**: when a physical claim needs unit-checked admission and a fail-closed story for diligence, this is the machinery. It is not the homepage CTA. It is what serious buyers ask about after they try the public tools.
+Mech OS sits underneath as a **credibility layer**: when a physical claim needs unit-checked admission and a fail-closed story for diligence, this is the machinery. It is not the homepage CTA. It is what serious buyers ask about after they try the public tools.
 
 ## Contact
 
